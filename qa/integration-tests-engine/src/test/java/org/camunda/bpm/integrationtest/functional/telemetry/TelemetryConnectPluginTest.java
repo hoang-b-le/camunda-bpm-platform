@@ -22,9 +22,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.camunda.bpm.engine.impl.telemetry.TelemetryRegistry.EXECUTED_DECISION_INSTANCES;
-import static org.camunda.bpm.engine.impl.telemetry.TelemetryRegistry.FLOW_NODE_INSTANCES;
-import static org.camunda.bpm.engine.impl.telemetry.TelemetryRegistry.ROOT_PROCESS_INSTANCES;
+import static org.camunda.bpm.engine.management.Metrics.ACTIVTY_INSTANCE_START;
+import static org.camunda.bpm.engine.management.Metrics.EXECUTED_DECISION_INSTANCES;
 import static org.camunda.bpm.engine.impl.telemetry.TelemetryRegistry.UNIQUE_TASK_WORKERS;
 import static org.junit.Assert.assertNotNull;
 
@@ -45,6 +44,7 @@ import org.camunda.bpm.engine.impl.telemetry.dto.Metric;
 import org.camunda.bpm.engine.impl.telemetry.dto.Product;
 import org.camunda.bpm.engine.impl.telemetry.reporter.TelemetryReporter;
 import org.camunda.bpm.engine.impl.util.JsonUtil;
+import org.camunda.bpm.engine.impl.util.ParseUtil;
 import org.camunda.bpm.integrationtest.util.AbstractFoxPlatformIntegrationTest;
 import org.camunda.bpm.integrationtest.util.TestContainer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -142,7 +142,7 @@ public class TelemetryConnectPluginTest extends AbstractFoxPlatformIntegrationTe
 
   protected Data createDataToSend() {
     Database database = new Database("mySpecialDb", "v.1.2.3");
-    Internals internals = new Internals(database, new ApplicationServer("Apache Tomcat/10.0.1"));
+    Internals internals = new Internals(database, new ApplicationServer("Apache Tomcat/10.0.1"), ParseUtil.parseJdkDetails());
 
     Map<String, Command> commands = configuration.getTelemetryData().getProduct().getInternals().getCommands();
     internals.setCommands(commands);
@@ -160,9 +160,9 @@ public class TelemetryConnectPluginTest extends AbstractFoxPlatformIntegrationTe
   }
   protected Map<String, Metric> assembleMetrics(long processCount, long decisionCount, long flowNodeCount, long workerCount) {
     Map<String, Metric> metrics = new HashMap<>();
-    metrics.put(ROOT_PROCESS_INSTANCES, new Metric(processCount));
+    metrics.put(ACTIVTY_INSTANCE_START, new Metric(processCount));
     metrics.put(EXECUTED_DECISION_INSTANCES, new Metric(decisionCount));
-    metrics.put(FLOW_NODE_INSTANCES, new Metric(flowNodeCount));
+    metrics.put(ACTIVTY_INSTANCE_START, new Metric(flowNodeCount));
     metrics.put(UNIQUE_TASK_WORKERS, new Metric(workerCount));
     return metrics;
   }
