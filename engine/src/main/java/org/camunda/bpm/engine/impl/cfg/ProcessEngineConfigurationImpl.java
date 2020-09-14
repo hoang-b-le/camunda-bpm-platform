@@ -62,6 +62,7 @@ import org.camunda.bpm.dmn.feel.impl.scala.function.FeelCustomFunctionProvider;
 import org.camunda.bpm.engine.ArtifactFactory;
 import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.CaseService;
+import org.camunda.bpm.engine.CrdbIntegrationProvider;
 import org.camunda.bpm.engine.DecisionService;
 import org.camunda.bpm.engine.ExternalTaskService;
 import org.camunda.bpm.engine.FilterService;
@@ -477,6 +478,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * </ul>
    */
   protected int commandRetries = 0;
+
+  protected CrdbIntegrationProvider crdbIntegrationProvider;
 
   // SESSION FACTORIES ////////////////////////////////////////////////////////
 
@@ -972,6 +975,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initHistoryEventProducer();
     initCmmnHistoryEventProducer();
     initDmnHistoryEventProducer();
+    initCrdbIntegrationProvider();
     initHistoryEventHandler();
     initExpressionManager();
     initBeans();
@@ -2593,6 +2597,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       } else {
         historyEventHandler = new CompositeHistoryEventHandler(customHistoryEventHandlers);
       }
+    }
+  }
+
+  // crdb integration provider //////////////////////////////////////////////
+  protected void initCrdbIntegrationProvider() {
+    if (crdbIntegrationProvider == null) {
+      crdbIntegrationProvider = new DefaultCrdbIntegrationProvider();
     }
   }
 
@@ -4898,7 +4909,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   protected CrdbTransactionRetryInterceptor getCrdbRetryInterceptor() {
-    return new CrdbTransactionRetryInterceptor(commandRetries);
+    return crdbIntegrationProvider.getCrdbRetryInterceptor(commandRetries);
   }
 
+  public CrdbIntegrationProvider getCrdbIntegrationProvider() {
+    return crdbIntegrationProvider;
+  }
+
+  public void setCrdbIntegrationProvider(CrdbIntegrationProvider crdbIntegrationProvider) {
+    this.crdbIntegrationProvider = crdbIntegrationProvider;
+  }
 }
