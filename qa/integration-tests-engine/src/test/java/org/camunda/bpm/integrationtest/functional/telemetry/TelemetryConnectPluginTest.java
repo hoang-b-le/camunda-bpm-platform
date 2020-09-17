@@ -64,15 +64,15 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 @RunWith(Arquillian.class)
 public class TelemetryConnectPluginTest extends AbstractFoxPlatformIntegrationTest {
 
-  ProcessEngine engine1;
+  ProcessEngine engineConnect;
   ProcessEngineConfigurationImpl configuration;
   WireMockServer wireMockServer;
 
   @Before
   public void setEngines() {
     ProcessEngineService engineService = BpmPlatform.getProcessEngineService();
-    engine1 = engineService.getProcessEngine("engine1");
-    configuration = (ProcessEngineConfigurationImpl) engine1.getProcessEngineConfiguration();
+    engineConnect = engineService.getProcessEngine("engine-connect-1");
+    configuration = (ProcessEngineConfigurationImpl) engineConnect.getProcessEngineConfiguration();
 
     // clean up the recorded commands
     configuration.getTelemetryRegistry().clear();
