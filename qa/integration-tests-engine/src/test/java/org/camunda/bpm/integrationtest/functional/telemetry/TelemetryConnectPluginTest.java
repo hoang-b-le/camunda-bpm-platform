@@ -82,7 +82,7 @@ public class TelemetryConnectPluginTest extends AbstractFoxPlatformIntegrationTe
   public void tearDown() {
     configuration.getManagementService().toggleTelemetry(true);
     if (wireMockServer != null) {
-      wireMockServer.stop();
+//      wireMockServer.stop();
     }
   }
 
