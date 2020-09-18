@@ -941,6 +941,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   /** default: once every 24 hours */
   protected long telemetryReportingPeriod = 24 * 60 * 60;
   protected Data telemetryData;
+  /** the connection and socket timeout configuration of the telemetry request
+   * in milliseconds
+   *  default: 15 seconds */
+  protected int telemetryRequestTimeout = 15 * 1000;
 
 
   // buildProcessEngine ///////////////////////////////////////////////////////
@@ -2663,7 +2667,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                                                   telemetryReportingPeriod,
                                                   telemetryData,
                                                   telemetryHttpConnector,
-                                                  telemetryRegistry);
+                                                  telemetryRegistry,
+                                                  telemetryRequestTimeout);
       }
     }
   }
@@ -4859,6 +4864,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setTelemetryData(Data telemetryData) {
     this.telemetryData = telemetryData;
+    return this;
+  }
+
+  public int getTelemetryRequestTimeout() {
+    return telemetryRequestTimeout;
+  }
+
+  public ProcessEngineConfigurationImpl setTelemetryRequestTimeout(int telemetryRequestTimeout) {
+    this.telemetryRequestTimeout = telemetryRequestTimeout;
     return this;
   }
 }
